@@ -5,7 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using MicroServices.Common.Commands;
 using MicroServices.Common.Events;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using RawRabbit;
+using RawRabbit.Instantiation;
 
 namespace MicroServices.Common.RabbitMq
 {
@@ -30,5 +33,19 @@ namespace MicroServices.Common.RabbitMq
         private static string GetQueueName<T>()
             => $"{Assembly.GetEntryAssembly().GetName()}/{typeof(T).Name}";
 
+        public static void AddRabbitMq(this IServiceCollection services, IConfiguration configuration)
+        {
+            var options = new RabbitMqOptions();
+            var section = configuration.GetSection("rabbitMq");
+
+            section.Bind(options);
+
+            var client = RawRabbitFactory.CreateSingleton(new RawRabbitOptions
+            {
+                ClientConfiguration = options
+            });
+
+            services.AddSingleton<IBusClient>(_ => client);
+        }
     }
 }
