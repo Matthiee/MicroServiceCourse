@@ -11,11 +11,12 @@ namespace MicroServices.Common.Services
     {
         private readonly IWebHost webHost;
 
-        private IBusClient bus;
+        private readonly IBusClient bus;
 
-        public BusBuilder(IWebHost webHost)
+        public BusBuilder(IWebHost webHost, IBusClient bus)
         {
             this.webHost = webHost ?? throw new ArgumentNullException(nameof(webHost));
+            this.bus = bus ?? throw new ArgumentNullException(nameof(bus));
         }
 
         public BusBuilder SubscribeToCommand<TCommand>() where TCommand : ICommand

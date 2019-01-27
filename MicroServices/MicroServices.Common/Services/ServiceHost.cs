@@ -29,7 +29,7 @@ namespace MicroServices.Common.Services
                 .UseConfiguration(cfg)
                 .UseStartup<TStartup>();
 
-            return new HostBuilder(webHostBuilder);
+            return new HostBuilder(webHostBuilder.Build());
         }
     }
 }
