@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using MicroServices.Common.Commands;
 using MicroServices.Common.RabbitMq;
-using MicroServices.Services.Identity.Handlers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
