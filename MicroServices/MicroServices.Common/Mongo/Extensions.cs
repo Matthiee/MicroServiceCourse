@@ -26,7 +26,9 @@ namespace MicroServices.Common.Mongo
                 return client.GetDatabase(options.Value.Database);
             });
 
-            services.AddTransient()
+            services.AddTransient<IDatabaseInitializer, MongoInitializer>();
+
+            services.AddTransient<IDatabaseSeeder, MongoSeeder>();
         }
     }
 }

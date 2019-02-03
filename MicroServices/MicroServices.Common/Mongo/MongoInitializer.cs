@@ -11,11 +11,13 @@ namespace MicroServices.Common.Mongo
     {
         private bool initialized;
         private readonly IMongoDatabase database;
+        private readonly IDatabaseSeeder seeder;
         private readonly bool seed;
 
-        public MongoInitializer(IMongoDatabase database, IOptions<MongoOptions> options)
+        public MongoInitializer(IMongoDatabase database, IDatabaseSeeder seeder, IOptions<MongoOptions> options)
         {
             this.database = database ?? throw new ArgumentNullException(nameof(database));
+            this.seeder = seeder;
             this.seed = options.Value.Seed;
         }
 
@@ -27,6 +29,8 @@ namespace MicroServices.Common.Mongo
             initialized = true;
 
             if (!seed) return;
+
+            await seeder.SeedAsync();
         }
 
         private void RegisterConventions()

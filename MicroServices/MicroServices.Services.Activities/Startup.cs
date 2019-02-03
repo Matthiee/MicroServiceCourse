@@ -4,8 +4,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using MicroServices.Common.Commands;
 using MicroServices.Common.Events;
+using MicroServices.Common.Mongo;
 using MicroServices.Common.RabbitMq;
+using MicroServices.Services.Activities.Domain.Repositories;
 using MicroServices.Services.Activities.Handlers;
+using MicroServices.Services.Activities.Repositories;
+using MicroServices.Services.Activities.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -31,8 +35,16 @@ namespace MicroServices.Services.Activities
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
+            services.AddMongoDb(Configuration);
             services.AddRabbitMq(Configuration);
             services.AddTransient<ICommandHandler<CreateActivity>, CreateActivityHandler>();
+
+            services.AddTransient<IActivityRepository, ActivityRepository>();
+            services.AddTransient<ICategoryRepository, CategoryRepository>();
+
+            services.AddTransient<IDatabaseSeeder, ActivitiesMongoSeeder>();
+
+            services.AddTransient<IActivityService, ActivityService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -46,6 +58,8 @@ namespace MicroServices.Services.Activities
             {
                 app.UseHsts();
             }
+
+            app.ApplicationServices.GetService<IDatabaseInitializer>().InitialzeAsync();
 
             app.UseHttpsRedirection();
             app.UseMvc();
