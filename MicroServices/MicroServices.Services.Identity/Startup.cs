@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MicroServices.Common.Auth;
 using MicroServices.Common.Commands;
 using MicroServices.Common.Mongo;
 using MicroServices.Common.RabbitMq;
@@ -35,12 +36,15 @@ namespace MicroServices.Services.Identity
             services.AddMvc();
             services.AddLogging(builder => builder.AddDebug().AddConsole());
 
+            services.AddJwt(Configuration);
             services.AddMongoDb(Configuration);
             services.AddRabbitMq(Configuration);
             services.AddTransient<ICommandHandler<CreateUser>, CreateUserHandler>();
             services.AddTransient<IEncrypter, Encrypter>();
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IUserService, UserService>();
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

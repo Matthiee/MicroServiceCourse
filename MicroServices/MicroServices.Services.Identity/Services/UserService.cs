@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MicroServices.Common.Auth;
 using MicroServices.Common.Exceptions;
 using MicroServices.Services.Identity.Domain.Models;
 using MicroServices.Services.Identity.Domain.Repositories;
@@ -13,14 +14,16 @@ namespace MicroServices.Services.Identity.Services
     {
         private readonly IUserRepository userRepository;
         private readonly IEncrypter encrypter;
+        private readonly IJwtHandler jwtHandler;
 
-        public UserService(IUserRepository userRepository, IEncrypter encrypter)
+        public UserService(IUserRepository userRepository, IEncrypter encrypter, IJwtHandler jwtHandler)
         {
             this.userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
             this.encrypter = encrypter ?? throw new ArgumentNullException(nameof(encrypter));
+            this.jwtHandler = jwtHandler;
         }
 
-        public async Task LoginAsync(string email, string password)
+        public async Task<AuthToken> LoginAsync(string email, string password)
         {
             var user = await userRepository.GetAsync(email);
 
@@ -30,7 +33,7 @@ namespace MicroServices.Services.Identity.Services
             if (!user.ValidatePassword(password, encrypter))
                 throw new MicroServiceException("invalid_password", $"Invalid email and/or password!");
 
-            await Task.CompletedTask;
+            return jwtHandler.Create(user.Id);
         }
 
         public async Task RegisterUserAsync(string email, string password, string name)

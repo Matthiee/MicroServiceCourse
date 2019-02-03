@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Threading.Tasks;
 using MicroServices.Common.Commands;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RawRabbit;
 
 namespace MicroServices.Api.Controllers
 {
     [Route("[controller]")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class ActivitiesController : ControllerBase
     {
         private readonly IBusClient busClient;
