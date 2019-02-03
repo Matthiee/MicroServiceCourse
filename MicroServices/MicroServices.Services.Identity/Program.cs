@@ -19,7 +19,7 @@ namespace MicroServices.Services.Identity
             ServiceHost
                 .Create<Startup>(args)
                 .UseRabbitMq()
-                .SubscribeToCommand<CreateActivity>()
+                .SubscribeToCommand<CreateUser>()
                 .Builder()
                 .Run();
         }

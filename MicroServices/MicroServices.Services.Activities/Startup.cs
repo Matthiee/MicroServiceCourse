@@ -37,6 +37,7 @@ namespace MicroServices.Services.Activities
 
             services.AddMongoDb(Configuration);
             services.AddRabbitMq(Configuration);
+
             services.AddTransient<ICommandHandler<CreateActivity>, CreateActivityHandler>();
 
             services.AddTransient<IActivityRepository, ActivityRepository>();
